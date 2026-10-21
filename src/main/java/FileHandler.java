@@ -58,7 +58,6 @@ public class FileHandler {
         }
     }
 
-    // Parse CSV String into Transaction, String: Date, TransactionType, Category, Amount  (2026-01-15,INCOME,Salary,25000.0)
     Transaction parseLine(String line) {
         log.debug("Parsing line: {}", line);
         String[] parts = line.split(",");
