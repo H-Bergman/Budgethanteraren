@@ -1,5 +1,6 @@
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.io.UncheckedIOException;
 import java.nio.file.Path;
 import java.time.LocalDate;
@@ -11,20 +12,27 @@ import java.util.TreeMap;
 public class Main {
 
     private static final Logger log = LoggerFactory.getLogger(Main.class);
+    private static final String ROW_FORMAT = "%-12s %-9s %-15s %10s";
 
     private final Repository<Transaction> repo = new Repository<>();
     private final FileHandler fileHandler;
 
-    private static final String ROW_FORMAT = "%-12s %-9s %-15s %10s";
 
     public Main (FileHandler fileHandler) {
         this.fileHandler = fileHandler;
     }
 
     static void main() {
+        log.info("Application started");
         FileHandler fh = new FileHandler(Path.of("transactions.csv"));
         Main main = new Main(fh);
-        main.run();
+        try {
+            main.run();
+            log.info("Application exited normally");
+        } catch (RuntimeException e) {
+            log.error("Unexpected error occurred, application stopped", e);
+            IO.println("An unexpected error occurred, see logs/budget.log for details.");
+        }
     }
 
     private void run() {
@@ -32,6 +40,7 @@ public class Main {
         while (true) {
             printMenu();
             int choice = getInput(1, 5);
+            log.debug("Menu choice: {}", choice);
             switch (choice) {
                 case 1 -> addTransaction();
                 case 2 -> showAll();
@@ -40,6 +49,7 @@ public class Main {
                 case 5 -> save();
                 case 0 -> {
                     if (askYesNo("Save before quitting?")) save();
+                    log.info("User chose to quit");
                     return;
                 }
             }
