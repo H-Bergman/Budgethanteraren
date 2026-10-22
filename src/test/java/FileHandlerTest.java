@@ -221,6 +221,15 @@ class FileHandlerTest {
     }
 
     @Test
+    void parseLine_blankCategory_throwsFileFormatException() {
+        // Arrange
+        String invalidLine = "2026-03-12,INCOME,,100";
+
+        // Act + Assert
+        assertThrows(FileFormatException.class, () -> fileHandler.parseLine(invalidLine));
+    }
+
+    @Test
     void parseLine_surroundingWhitespace_throwsFileFormatException() {
         // Arrange
         String invalidLine = " 2026-03-12 , INCOME , Salary , 50 ";

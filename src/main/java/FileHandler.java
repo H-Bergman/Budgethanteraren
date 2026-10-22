@@ -19,6 +19,8 @@ public class FileHandler {
     private static final Logger log = LoggerFactory.getLogger(FileHandler.class);
     private final Path filePath;
 
+    private static final int FIELD_COUNT = 4;
+
     public FileHandler(Path filePath) {
         Objects.requireNonNull(filePath, "filePath cannot be null");
         this.filePath = filePath;
@@ -60,13 +62,15 @@ public class FileHandler {
 
     Transaction parseLine(String line) {
         log.debug("Parsing line: {}", line);
-        String[] parts = line.split(",");
+
+        String[] parts = line.split(",", -1);
+
         LocalDate date;
         TransactionType type;
         String category;
         double amount;
 
-        if (parts.length != 3) {
+        if (parts.length != FIELD_COUNT) {
             throw new FileFormatException("Invalid line format: " +  line);
         }
 
@@ -82,14 +86,10 @@ public class FileHandler {
             throw new FileFormatException("Invalid transaction type: " + parts[1]);
         }
 
-        if (parts[2] != null && parts[2].matches("^\\s*\\w+\\s*$")) {
-            category = parts[2].trim();
-        } else {
-            throw new FileFormatException("Invalid category: " + parts[2]);
-        }
+        category = parts[2].trim();
 
         try {
-            amount = Double.parseDouble(parts[2]);
+            amount = Double.parseDouble(parts[3]);
         } catch (NumberFormatException e) {
             throw new FileFormatException("Invalid transaction amount: " + parts[2]);
         }
