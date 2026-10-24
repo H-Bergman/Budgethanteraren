@@ -64,7 +64,7 @@ public class Main {
             ==============================
               1) Add a transaction
               2) Show all transactions
-              3) Show balance per category
+              3) Show balance and summery per category
               4) Filter transactions
               5) Save to file
             
